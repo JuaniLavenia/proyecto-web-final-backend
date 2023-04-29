@@ -11,10 +11,13 @@ mongoose
 
 app.use(express.json()); // req.body
 
+const cors = require("cors");
+
 app.get("/", (req, res) => {
   res.send("Hola");
 });
 
+app.use(cors());
 app.use("/api", require("./routes/users"));
 app.use("/api", require("./routes/productos"));
 app.use("/api", require("./routes/auth.router"));
