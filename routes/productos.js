@@ -6,16 +6,15 @@ const User = require("../models/User");
 
 router.get("/productos", async (req, res) => {
   try {
-    const { authorization } = req.headers;
-    const token = authorization.split(" ").pop();
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    // const { authorization } = req.headers;
+    // const token = authorization.split(" ").pop();
+    // const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-    const { uid } = payload;
-
+    // const { uid } = payload;
+    // const user = User.findById(uid);
     const productos = await Producto.find();
-    const user = User.findById(uid);
 
-    res.json(productos, user);
+    res.json(productos);
   } catch (err) {
     console.log(err);
     return res.status(401).json({ error: err.message });
