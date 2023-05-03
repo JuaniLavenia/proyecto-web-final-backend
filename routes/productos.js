@@ -68,4 +68,33 @@ router.delete("/productos/:id", async (req, res) => {
   }
 });
 
+router.get("/productos/search/:filter", async (req, res) => {
+  const { filter } = req.params;
+
+  try {
+    let productos;
+    if (!filter) {
+      productos = await Producto.find();
+    } else {
+      productos = await Producto.find({ name: { $regex: filter } });
+    }
+
+    res.json(productos);
+  } catch (error) {
+    console.log(err);
+  }
+});
+
+router.get("/productos/category/:filter", async (req, res) => {
+  const { filter } = req.params;
+
+  try {
+    const productos = await Producto.find({ category: { $regex: filter } });
+
+    res.json(productos);
+  } catch (error) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
