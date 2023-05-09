@@ -6,7 +6,7 @@ const User = require("../models/User");
 const multer = require("multer");
 
 //creamos el storage para guardar la imagen
-const storage = multer.diskStorage({
+const storage = multer.diskStorage({ //storage de disco
   destination: function (req, file, cb) {
     cb(null, "./public/img/productos"); //ubicacion donde se va a guarda
   },
@@ -14,6 +14,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname); //nombre original del archivo
   },
 });
+//este va a subir el archivo
 const upload = multer({ storage: storage });
 
 //rutas
@@ -52,6 +53,7 @@ router.get("/productos/:id", async (req, res) => {
 //upload sigle sube una sola imagen
 router.post("/productos", upload.single("image"), async (req, res) => {
   console.log(req.body, req.file);
+  
   try {
     //creamos un product
     const producto = new Producto({
@@ -62,6 +64,7 @@ router.post("/productos", upload.single("image"), async (req, res) => {
       stock: req.body.stock,
       category: req.body.category,
     });
+    //guardamos
     const result = await producto.save();
     // console.log(result)
     res.json(result);

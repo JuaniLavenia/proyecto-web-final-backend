@@ -9,10 +9,10 @@ mongoose
   .then(() => console.log("mongoose conectado"))
   .catch((err) => console.log(err));
 
-
 //miderword
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static("public")); //archivos publicos y estaticos
 app.use(express.json()); // req.body
-app.use(express.static("public"))
 
 const cors = require("cors");
 
