@@ -34,11 +34,15 @@ router.get("/productos", async (req, res) => {
   }
 });
 
+//vamos a traer un solo producto, usa findById
 router.get("/productos/:id", async (req, res) => {
   try {
-    const productos = await Producto.findById(req.params.id);
-    console.log(productos);
-    res.send("Id de productos");
+    //aqui busco los datos dentro de la base
+    //esto es una promesa y se trae por el ID
+    const producto = await Producto.findById(req.params.id);
+    console.log(producto);
+    // estos datos ya viene de la base de datos
+    res.json(producto);
   } catch (err) {
     console.log(err);
   }
@@ -66,11 +70,25 @@ router.post("/productos", upload.single("image"), async (req, res) => {
   }
 });
 
-router.put("/productos/:id", async (req, res) => {
+//vamos a actualizar un registro
+router.put("/productos/:id", upload.single("image"), async (req, res) => {
+  // console.log(req.body)
   try {
-    const result = await Producto.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    //modifica un parametro por ID
+    const result = await Producto.findByIdAndUpdate(
+      req.params.id, //aqui lo va a buscar
+      {
+        name: req.body.name,
+        description: req.body.description,
+        image: req.file.filename,
+        price: req.body.price,
+        stock: req.body.stock,
+        category: req.body.category,
+      },
+      {
+        new: true,
+      }
+    ); //trae el registro que acaba de crear
     res.json(result);
   } catch (err) {
     console.log(err);
