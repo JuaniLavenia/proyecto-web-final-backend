@@ -62,7 +62,9 @@ router.post("/productos", upload.single("image"), async (req, res) => {
       image: req.file.filename,
       price: req.body.price,
       stock: req.body.stock,
+      ability: req.body.ability,
       category: req.body.category,
+      
     });
     //guardamos
     const result = await producto.save();
@@ -86,7 +88,8 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
         image: req.file.filename,
         price: req.body.price,
         stock: req.body.stock,
-        category: req.body.category,
+        ability: req.body.ability,
+        category: req.body.category,   
       },
       {
         new: true,
