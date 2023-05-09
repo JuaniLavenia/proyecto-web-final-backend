@@ -109,4 +109,16 @@ router.delete("/productos/:id", async (req, res) => {
   }
 });
 
+//Ruta de buscador
+router.get("/productos/search/:filter", async (req, res) => {
+  const { filter } = req.params
+  try {
+    const productos = await Producto.find({ name: { $regex:filter } });
+
+    res.json(productos);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
