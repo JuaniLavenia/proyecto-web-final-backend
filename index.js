@@ -9,7 +9,10 @@ mongoose
   .then(() => console.log("mongoose conectado"))
   .catch((err) => console.log(err));
 
+
+//miderword
 app.use(express.json()); // req.body
+app.use(express.static("public"))
 
 const cors = require("cors");
 

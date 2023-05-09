@@ -3,7 +3,20 @@ const Producto = require("../models/Producto");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const multer = require("multer");
 
+//creamos el storage para guardar la imagen
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/img/productos"); //ubicacion donde se va a guarda
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); //nombre original del archivo
+  },
+});
+const upload = multer({ storage: storage });
+
+//rutas
 router.get("/productos", async (req, res) => {
   try {
     // const { authorization } = req.headers;
@@ -31,17 +44,23 @@ router.get("/productos/:id", async (req, res) => {
   }
 });
 
-router.post("/productos/", async (req, res) => {
+//vamos a crear un solo producto
+//upload sigle sube una sola imagen
+router.post("/productos", upload.single("image"), async (req, res) => {
+  console.log(req.body, req.file);
   try {
+    //creamos un product
     const producto = new Producto({
-      nombre: req.body.nombre,
-      descripcion: req.body.descripcion,
-      precio: req.body.precio,
+      name: req.body.name,
+      description: req.body.description,
+      image: req.file.filename,
+      price: req.body.price,
       stock: req.body.stock,
+      category: req.body.category,
     });
     const result = await producto.save();
-    console.log(result);
-    res.send("Nuevo productos");
+    // console.log(result)
+    res.json(result);
   } catch (err) {
     console.log(err);
   }

@@ -7,7 +7,6 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-
   description: String,
   imagen:String,
   price: {
@@ -17,6 +16,10 @@ const schema = new Schema({
   stock: {
     type: Number,
     default: 0,
+  },
+  category: {
+    type: String,
+    required: true,
   },
 });
 
