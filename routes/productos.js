@@ -95,11 +95,15 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+
+//vamos a borrar un registro
 router.delete("/productos/:id", async (req, res) => {
+  // console.log(req.body)
   try {
+    //busca y brorra el elemento
     const result = await Producto.findByIdAndDelete(req.params.id);
-    const msg = result ? "Registro Borrado" : "No se encontro el registro";
-    res.json({ msg });
+    const msg = result ? "Registro borrado" : "No se encontro el registro";
+    res.json({ msg }); //me trae el registro que borro
   } catch (err) {
     console.log(err);
   }

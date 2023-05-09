@@ -8,7 +8,7 @@ const schema = new Schema({
     required: true,
   },
   description: String,
-  imagen:String,
+  image:String,
   price: {
     type: Number,
     required: true,
