@@ -15,7 +15,7 @@ const schema = new Schema({
   },
   stock: {
     type: Number,
-    default: 0,
+    required: true,
   },
   category: {
     type: String,
