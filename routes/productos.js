@@ -127,4 +127,18 @@ router.get("/productos/search/:filter", async (req, res) => {
   }
 });
 
+//Ruta de categoria
+router.get("/productos/category/:filter", async (req, res) => {
+  const { filter } = req.params;
+
+  try {
+    const productos = await Producto.find({ category: { $regex: filter } });
+
+    console.log(productos)
+    res.json(productos);
+  } catch (error) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
