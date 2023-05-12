@@ -17,16 +17,15 @@ const schema = new Schema({
     type: Number,
     required: true,
   },
-  ability: {
-    type: Number,
+  capacity: {
+    type: String,
     required: true,
   },
-  
+
   category: {
     type: String,
     required: true,
   },
-  
 });
 
 //el modelo se llama Productos y viene de schema, luego lo exporto

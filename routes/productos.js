@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const multer = require("multer");
 
-
-const storage = multer.diskStorage({ 
+//creamos el storage para guardar la imagen
+const storage = multer.diskStorage({ //storage de disco
   destination: function (req, file, cb) {
     cb(null, "./public/img/productos"); 
   },
@@ -50,7 +50,7 @@ router.get("/productos/:id", async (req, res) => {
 
 router.post("/productos", upload.single("image"), async (req, res) => {
   console.log(req.body, req.file);
-  
+
   try {
   
     const producto = new Producto({
@@ -59,9 +59,8 @@ router.post("/productos", upload.single("image"), async (req, res) => {
       image: req.file.filename,
       price: req.body.price,
       stock: req.body.stock,
-      ability: req.body.ability,
+      capacity: req.body.capacity,
       category: req.body.category,
-      
     });
 
     const result = await producto.save();
@@ -84,8 +83,8 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
         image: req.file.filename,
         price: req.body.price,
         stock: req.body.stock,
-        ability: req.body.ability,
-        category: req.body.category,   
+        capacity: req.body.capacity,
+        category: req.body.category,
       },
       {
         new: true,
@@ -97,6 +96,8 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+
+//vamos a borrar un registro
 router.delete("/productos/:id", async (req, res) => {
  
   try {  
@@ -109,9 +110,9 @@ router.delete("/productos/:id", async (req, res) => {
 });
 
 router.get("/productos/search/:filter", async (req, res) => {
-  const { filter } = req.params
+  const { filter } = req.params;
   try {
-    const productos = await Producto.find({ name: { $regex:filter } });
+    const productos = await Producto.find({ name: { $regex: filter } });
 
     res.json(productos);
   } catch (err) {
