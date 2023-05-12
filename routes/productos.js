@@ -6,7 +6,8 @@ const User = require("../models/User");
 const multer = require("multer");
 
 //creamos el storage para guardar la imagen
-const storage = multer.diskStorage({ //storage de disco
+const storage = multer.diskStorage({
+  //storage de disco
   destination: function (req, file, cb) {
     cb(null, "./public/img/productos"); //ubicacion donde se va a guarda
   },
@@ -53,7 +54,7 @@ router.get("/productos/:id", async (req, res) => {
 //upload sigle sube una sola imagen
 router.post("/productos", upload.single("image"), async (req, res) => {
   console.log(req.body, req.file);
-  
+
   try {
     //creamos un product
     const producto = new Producto({
@@ -62,9 +63,8 @@ router.post("/productos", upload.single("image"), async (req, res) => {
       image: req.file.filename,
       price: req.body.price,
       stock: req.body.stock,
-      ability: req.body.ability,
+      capacity: req.body.capacity,
       category: req.body.category,
-      
     });
     //guardamos
     const result = await producto.save();
@@ -88,8 +88,8 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
         image: req.file.filename,
         price: req.body.price,
         stock: req.body.stock,
-        ability: req.body.ability,
-        category: req.body.category,   
+        capacity: req.body.capacity,
+        category: req.body.category,
       },
       {
         new: true,
@@ -100,7 +100,6 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
     console.log(err);
   }
 });
-
 
 //vamos a borrar un registro
 router.delete("/productos/:id", async (req, res) => {
@@ -117,9 +116,9 @@ router.delete("/productos/:id", async (req, res) => {
 
 //Ruta de buscador
 router.get("/productos/search/:filter", async (req, res) => {
-  const { filter } = req.params
+  const { filter } = req.params;
   try {
-    const productos = await Producto.find({ name: { $regex:filter } });
+    const productos = await Producto.find({ name: { $regex: filter } });
 
     res.json(productos);
   } catch (err) {
