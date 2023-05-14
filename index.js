@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 app.use(cors());
 app.use("/api", require("./routes/users"));
 app.use("/api", require("./routes/productos"));
-// app.use("/api", require("./routes/auth.router"));
+app.use("/api", require("./routes/auth.router"));
 app.use("/api", require("./routes/auth"));
 
 const PORT = process.env.PORT || 3000;

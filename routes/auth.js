@@ -1,44 +1,26 @@
 const express = require("express");
-const User = require("../models/User");
+const { body } = require("express-validator");
+const { login, register } = require("../controllers/auth.controller");
 const router = express.Router();
 
-router.post("/login", async (req, res) => {
-	const { email, password } = req.body;
-	try {
-		let user = await User.findOne({ email });
-		if (!user) {
-			return res
-				.status(403)
-				.json({ error: "El correo y/o la contraseña son incorrectos" });
-		}
+router.post("/login", login);
 
-		const passwordCorrecto = await user.comparePassword(password);
-		if (!passwordCorrecto) {
-			return res
-				.status(403)
-				.json({ error: "El correo y/o la contraseña son incorrectos" });
-		}
-		res.json({ login: true, userId: user.id });
-	} catch (error) {
-		res.status(500).json({ error: "Server error" });
-	}
-});
-
-router.post("/register", async (req, res) => {
-	const { email, password } = req.body;
-	try {
-		const user = new User({
-			email,
-			password,
-		});
-
-		await user.save();
-
-		res.json({ register: true, user });
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({ error: "Server error" });
-	}
-});
+router.post(
+	"/register",
+	[
+		body("email")
+			.trim()
+			.notEmpty()
+			.withMessage("El correo es requerido")
+			.isEmail()
+			.withMessage("El correo es incorrecto"),
+		body("password")
+			.notEmpty()
+			.trim()
+			.isLength(6)
+			.withMessage("La contraseña tiene que tener 6 o más caracteres"),
+	],
+	register
+);
 
 module.exports = router;
