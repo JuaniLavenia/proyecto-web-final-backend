@@ -6,16 +6,15 @@ const User = require("../models/User");
 
 router.get("/productos", async (req, res) => {
   try {
-    const { authorization } = req.headers;
-    const token = authorization.split(" ").pop();
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    // const { authorization } = req.headers;
+    // const token = authorization.split(" ").pop();
+    // const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-    const { uid } = payload;
-
+    // const { uid } = payload;
+    // const user = User.findById(uid);
     const productos = await Producto.find();
-    const user = User.findById(uid);
 
-    res.json(productos, user);
+    res.json(productos);
   } catch (err) {
     console.log(err);
     return res.status(401).json({ error: err.message });
@@ -65,6 +64,35 @@ router.delete("/productos/:id", async (req, res) => {
     const msg = result ? "Registro Borrado" : "No se encontro el registro";
     res.json({ msg });
   } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get("/productos/search/:filter", async (req, res) => {
+  const { filter } = req.params;
+
+  try {
+    let productos;
+    if (!filter) {
+      productos = await Producto.find();
+    } else {
+      productos = await Producto.find({ name: { $regex: filter } });
+    }
+
+    res.json(productos);
+  } catch (error) {
+    console.log(err);
+  }
+});
+
+router.get("/productos/category/:filter", async (req, res) => {
+  const { filter } = req.params;
+
+  try {
+    const productos = await Producto.find({ category: { $regex: filter } });
+
+    res.json(productos);
+  } catch (error) {
     console.log(err);
   }
 });
