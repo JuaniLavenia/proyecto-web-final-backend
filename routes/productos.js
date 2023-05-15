@@ -6,12 +6,13 @@ const User = require("../models/User");
 const multer = require("multer");
 
 //creamos el storage para guardar la imagen
-const storage = multer.diskStorage({ //storage de disco
+const storage = multer.diskStorage({
+  //storage de disco
   destination: function (req, file, cb) {
-    cb(null, "./public/img/productos"); 
+    cb(null, "./public/img/productos");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname); 
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
@@ -35,13 +36,11 @@ router.get("/productos", async (req, res) => {
   }
 });
 
-
 router.get("/productos/:id", async (req, res) => {
   try {
-    
     const producto = await Producto.findById(req.params.id);
     console.log(producto);
-  
+
     res.json(producto);
   } catch (err) {
     console.log(err);
@@ -52,7 +51,6 @@ router.post("/productos", upload.single("image"), async (req, res) => {
   console.log(req.body, req.file);
 
   try {
-  
     const producto = new Producto({
       name: req.body.name,
       description: req.body.description,
@@ -64,7 +62,7 @@ router.post("/productos", upload.single("image"), async (req, res) => {
     });
 
     const result = await producto.save();
-  
+
     res.json(result);
   } catch (err) {
     console.log(err);
@@ -72,9 +70,7 @@ router.post("/productos", upload.single("image"), async (req, res) => {
 });
 
 router.put("/productos/:id", upload.single("image"), async (req, res) => {
- 
   try {
-   
     const result = await Producto.findByIdAndUpdate(
       req.params.id, //aqui lo va a buscar
       {
@@ -89,21 +85,19 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
       {
         new: true,
       }
-    ); 
+    );
     res.json(result);
   } catch (err) {
     console.log(err);
   }
 });
 
-
 //vamos a borrar un registro
 router.delete("/productos/:id", async (req, res) => {
- 
-  try {  
+  try {
     const result = await Producto.findByIdAndDelete(req.params.id);
     const msg = result ? "Registro borrado" : "No se encontro el registro";
-    res.json({ msg }); 
+    res.json({ msg });
   } catch (err) {
     console.log(err);
   }
@@ -111,15 +105,20 @@ router.delete("/productos/:id", async (req, res) => {
 
 router.get("/productos/search/:filter", async (req, res) => {
   const { filter } = req.params;
+
   try {
-    const productos = await Producto.find({ name: { $regex: filter } });
+    let productos;
+    if (!filter) {
+      productos = await Producto.find();
+    } else {
+      productos = await Producto.find({ name: { $regex: filter } });
+    }
 
     res.json(productos);
-  } catch (err) {
+  } catch (error) {
     console.log(err);
   }
 });
-
 
 router.get("/productos/category/:filter", async (req, res) => {
   const { filter } = req.params;
@@ -127,7 +126,6 @@ router.get("/productos/category/:filter", async (req, res) => {
   try {
     const productos = await Producto.find({ category: { $regex: filter } });
 
-    console.log(productos)
     res.json(productos);
   } catch (error) {
     console.log(err);
