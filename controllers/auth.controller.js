@@ -52,7 +52,28 @@ const register = async (req, res) => {
 	}
 };
 
+const forgot = async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		const user = await User.findOne({ email });
+		if (!user) {
+			return res.status(422).json({ error: "No existe el usuario" });
+		}
+
+		const secret = process.env.JWT_SECRET + user.password;
+
+		const token = jwt.sign({ uis: user.id }, secret, { expiresIn: "15m" });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ error: "Server error" });
+	}
+
+	res.send("Forgot");
+};
+
 module.exports = {
 	login,
 	register,
+	forgot,
 };

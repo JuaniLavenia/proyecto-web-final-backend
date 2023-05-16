@@ -1,5 +1,5 @@
 const express = require("express");
-const { login, register } = require("../controllers/auth.controller");
+const { login, register, forgot } = require("../controllers/auth.controller");
 const { body } = require("express-validator");
 const { options } = require("./auth");
 const router = express.Router();
@@ -25,5 +25,7 @@ router.post(
 	],
 	register
 );
+
+router.post("/forgot", forgot);
 
 module.exports = router;
