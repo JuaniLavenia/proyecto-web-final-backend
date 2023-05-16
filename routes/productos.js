@@ -39,7 +39,6 @@ router.get("/productos", async (req, res) => {
 router.get("/productos/:id", async (req, res) => {
   try {
     const producto = await Producto.findById(req.params.id);
-    console.log(producto);
 
     res.json(producto);
   } catch (err) {
