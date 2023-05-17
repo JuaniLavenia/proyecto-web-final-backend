@@ -24,7 +24,7 @@ const login = async (req, res) => {
 			expiresIn: "1h",
 		});
 
-		res.json({ login: true, userId: user.id, token });
+		res.json({ login: true, userId: user.id, token});
 	} catch (error) {
 		res.status(500).json({ error: "Server error" });
 	}
@@ -32,6 +32,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
 	const result = validationResult(req);
+  
 	if (!result.isEmpty()) {
 		return res.status(422).json({ errors: result.array() });
 	}
