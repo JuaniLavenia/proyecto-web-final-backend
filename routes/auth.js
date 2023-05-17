@@ -1,9 +1,14 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { login, register } = require("../controllers/auth.controller");
+const {
+	login,
+	register,
+	resetPassword,
+} = require("../controllers/auth.controller");
 const router = express.Router();
 
 router.post("/login", login);
+router.post("/reset/:id/:token", resetPassword);
 
 router.post(
 	"/register",
