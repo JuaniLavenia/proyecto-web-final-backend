@@ -3,7 +3,22 @@ const Producto = require("../models/Producto");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const multer = require("multer");
 
+//creamos el storage para guardar la imagen
+const storage = multer.diskStorage({
+  //storage de disco
+  destination: function (req, file, cb) {
+    cb(null, "./public/img/productos");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+//rutas
 router.get("/productos", async (req, res) => {
   try {
     // const { authorization } = req.headers;
@@ -23,45 +38,64 @@ router.get("/productos", async (req, res) => {
 
 router.get("/productos/:id", async (req, res) => {
   try {
-    const productos = await Producto.findById(req.params.id);
-    console.log(productos);
-    res.send("Id de productos");
+    const producto = await Producto.findById(req.params.id);
+
+    res.json(producto);
   } catch (err) {
     console.log(err);
   }
 });
 
-router.post("/productos/", async (req, res) => {
+router.post("/productos", upload.single("image"), async (req, res) => {
+  console.log(req.body, req.file);
+
   try {
     const producto = new Producto({
-      nombre: req.body.nombre,
-      descripcion: req.body.descripcion,
-      precio: req.body.precio,
+      name: req.body.name,
+      description: req.body.description,
+      image: req.file.filename,
+      price: req.body.price,
       stock: req.body.stock,
+      capacity: req.body.capacity,
+      category: req.body.category,
     });
-    const result = await producto.save();
-    console.log(result);
-    res.send("Nuevo productos");
-  } catch (err) {
-    console.log(err);
-  }
-});
 
-router.put("/productos/:id", async (req, res) => {
-  try {
-    const result = await Producto.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const result = await producto.save();
+
     res.json(result);
   } catch (err) {
     console.log(err);
   }
 });
 
+router.put("/productos/:id", upload.single("image"), async (req, res) => {
+  try {
+    const result = await Producto.findByIdAndUpdate(
+      req.params.id, //aqui lo va a buscar
+      {
+        name: req.body.name,
+        description: req.body.description,
+        image: req.file.filename,
+        price: req.body.price,
+        stock: req.body.stock,
+        capacity: req.body.capacity,
+        category: req.body.category,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//vamos a borrar un registro
 router.delete("/productos/:id", async (req, res) => {
   try {
     const result = await Producto.findByIdAndDelete(req.params.id);
-    const msg = result ? "Registro Borrado" : "No se encontro el registro";
+    const msg = result ? "Registro borrado" : "No se encontro el registro";
     res.json({ msg });
   } catch (err) {
     console.log(err);

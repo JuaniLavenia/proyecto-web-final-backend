@@ -4,6 +4,7 @@ const {
 	register,
 	forgotPassword,
 	resetPassword,
+	adminLogin,
 } = require("../controllers/auth.controller");
 const { body } = require("express-validator");
 const { options } = require("./auth");
@@ -34,5 +35,6 @@ router.post(
 
 router.post("/forgot", forgotPassword);
 router.post("/reset/:id/:token", resetPassword);
+router.post("/admin-login", adminLogin);
 
 module.exports = router;
