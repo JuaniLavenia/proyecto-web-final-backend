@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const login = async (req, res) => {
 	const { email, password } = req.body;
@@ -52,7 +53,7 @@ const register = async (req, res) => {
 	}
 };
 
-const forgot = async (req, res) => {
+const forgotPassword = async (req, res) => {
 	const { email } = req.body;
 
 	try {
@@ -63,17 +64,79 @@ const forgot = async (req, res) => {
 
 		const secret = process.env.JWT_SECRET + user.password;
 
-		const token = jwt.sign({ uis: user.id }, secret, { expiresIn: "15m" });
+		const token = jwt.sign({ uid: user.id }, secret, { expiresIn: "15m" });
+
+		var transporter = nodemailer.createTransport({
+			host: "sandbox.smtp.mailtrap.io",
+			port: 2525,
+			auth: {
+				user: process.env.SMTP_USER,
+				pass: process.env.SMTP_PASS,
+			},
+		});
+
+		const link = `http://localhost:5173/reset/${user.id}?token=${token}`;
+
+		let emailOptions = {
+			from: "forgot.password@rollingdetailing.com",
+			to: user.email,
+			subject: "Restablecer Contraseña - Rolling-Detailing",
+			html: `
+			<h1> ¿Olvidaste tu contraseña? </h1>
+			<p> ¡No te preocupes! Te enviamos un link para que puedas acceder a tu cuenta; el mismo será válido por sólo 15 minutos. </br>
+			<a href= "${link}"> Hacé click acá para restablecer tu contraseña. </a>
+			</br>
+			¡Gracias por utilizar nuestros servicios!
+			</br>
+			Saludos,
+			</br>
+			El equipo de Rolling-Detailing.</br>
+			
+			`,
+		};
+
+		transporter.sendMail(emailOptions, function (err, data) {
+			if (err) {
+				return res.status(500).json({ err });
+			}
+			return res.json({
+				user,
+				link,
+			});
+		});
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ error: "Server error" });
 	}
+};
 
-	res.send("Forgot");
+const resetPassword = async (req, res) => {
+	const { id, token } = req.params;
+	const { password } = req.body;
+	try {
+		const user = await User.findById(id);
+		if (!user) {
+			return res.status(422).json({ error: "El usuario no existe" });
+		}
+		const secret = process.env.JWT_SECRET + user.password;
+		const verified = jwt.verify(token, secret);
+		if (verified) {
+			user.password = password;
+			await user.save();
+		}
+
+		res.json({
+			user,
+			verified,
+		});
+	} catch (error) {
+		res.status(500).json({ error: "Server error" });
+	}
 };
 
 module.exports = {
 	login,
 	register,
-	forgot,
+	forgotPassword,
+	resetPassword,
 };
