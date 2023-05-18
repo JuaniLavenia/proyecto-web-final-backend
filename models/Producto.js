@@ -5,15 +5,24 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-
   description: String,
+  image: String,
   price: {
     type: Number,
     required: true,
   },
   stock: {
     type: Number,
-    default: 0,
+    required: true,
+  },
+  capacity: {
+    type: String,
+    required: true,
+  },
+
+  category: {
+    type: String,
+    required: true,
   },
 });
 
