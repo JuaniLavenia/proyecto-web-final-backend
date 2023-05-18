@@ -5,9 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const multer = require("multer");
 
-//creamos el storage para guardar la imagen
 const storage = multer.diskStorage({
-  //storage de disco
   destination: function (req, file, cb) {
     cb(null, "./public/img/productos");
   },
@@ -18,7 +16,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-//rutas
 router.get("/productos", async (req, res) => {
   try {
     // const { authorization } = req.headers;
@@ -71,7 +68,7 @@ router.post("/productos", upload.single("image"), async (req, res) => {
 router.put("/productos/:id", upload.single("image"), async (req, res) => {
   try {
     const result = await Producto.findByIdAndUpdate(
-      req.params.id, //aqui lo va a buscar
+      req.params.id,
       {
         name: req.body.name,
         description: req.body.description,
@@ -91,7 +88,6 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
   }
 });
 
-//vamos a borrar un registro
 router.delete("/productos/:id", async (req, res) => {
   try {
     const result = await Producto.findByIdAndDelete(req.params.id);
