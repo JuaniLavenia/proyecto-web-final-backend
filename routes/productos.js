@@ -55,10 +55,10 @@ router.post("/productos", upload.single("image"), async (req, res) => {
       name: req.body.name,
       description: req.body.description,
       image: req.file.filename,
+      category: req.body.category,
       price: req.body.price,
       stock: req.body.stock,
-      capacity: req.body.capacity,
-      category: req.body.category,
+      capacity: req.body.capacity,    
     });
 
     const result = await producto.save();
