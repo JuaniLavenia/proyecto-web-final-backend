@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const multer = require("multer");
 
+//creamos el storage para guardar la imagen
 const storage = multer.diskStorage({
+  //storage de disco
   destination: function (req, file, cb) {
     cb(null, "./public/img/productos");
   },
@@ -16,6 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+//rutas
 router.get("/productos", async (req, res) => {
   try {
     // const { authorization } = req.headers;
@@ -36,6 +39,7 @@ router.get("/productos", async (req, res) => {
 router.get("/productos/:id", async (req, res) => {
   try {
     const producto = await Producto.findById(req.params.id);
+    console.log(producto);
 
     res.json(producto);
   } catch (err) {
@@ -51,10 +55,10 @@ router.post("/productos", upload.single("image"), async (req, res) => {
       name: req.body.name,
       description: req.body.description,
       image: req.file.filename,
+      category: req.body.category,
       price: req.body.price,
       stock: req.body.stock,
-      capacity: req.body.capacity,
-      category: req.body.category,
+      capacity: req.body.capacity,    
     });
 
     const result = await producto.save();
@@ -68,7 +72,7 @@ router.post("/productos", upload.single("image"), async (req, res) => {
 router.put("/productos/:id", upload.single("image"), async (req, res) => {
   try {
     const result = await Producto.findByIdAndUpdate(
-      req.params.id,
+      req.params.id, //aqui lo va a buscar
       {
         name: req.body.name,
         description: req.body.description,
@@ -88,6 +92,7 @@ router.put("/productos/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+//vamos a borrar un registro
 router.delete("/productos/:id", async (req, res) => {
   try {
     const result = await Producto.findByIdAndDelete(req.params.id);
@@ -106,7 +111,7 @@ router.get("/productos/search/:filter", async (req, res) => {
     if (!filter) {
       productos = await Producto.find();
     } else {
-      productos = await Producto.find({ name: { $regex: filter } });
+      productos = await Producto.find({ name: { $regex: filter, $options:"i"} });
     }
 
     res.json(productos);
