@@ -47,7 +47,7 @@ const register = async (req, res) => {
 
 		await user.save();
 
-		res.json({ register: true, user });
+		res.json({ register: true, userId: user.id });
 	} catch (error) {
 		res.status(500).json({ error });
 	}
