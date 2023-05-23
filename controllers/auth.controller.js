@@ -26,7 +26,6 @@ const login = async (req, res) => {
 
     res.json({ login: true, userId: user.id, token });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -48,7 +47,7 @@ const register = async (req, res) => {
 
     await user.save();
 
-    res.json({ register: true, user });
+    res.json({ register: true, userId: user.id });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -76,7 +75,7 @@ const forgotPassword = async (req, res) => {
       },
     });
 
-    const link = `http://localhost:5173/reset/${user.id}?token=${token}`;
+    const link = `https://rolling-detail-pf.vercel.app/reset/${user.id}?token=${token}`;
 
     let emailOptions = {
       from: "forgot.password@rollingdetailing.com",
@@ -128,7 +127,7 @@ const resetPassword = async (req, res) => {
     }
 
     res.json({
-      user,
+      userId: user.id,
       verified,
     });
   } catch (error) {
@@ -142,42 +141,9 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const adminLogin = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    if (email !== "admin@admin.com") {
-      return res.status(403).json({ error: "Acceso denegado" });
-    }
-
-    let user = await User.findOne({ email });
-    if (!user) {
-      return res
-        .status(403)
-        .json({ error: "El correo y/o la contraseña son incorrectos" });
-    }
-
-    const passCompare = await user.comparePassword(password);
-
-    if (!passCompare) {
-      return res
-        .status(403)
-        .json({ error: "El correo y/o la contraseña son incorrectos" });
-    }
-
-    const token = jwt.sign({ uid: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.json({ success: true, token });
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
-};
-
 module.exports = {
   login,
   register,
   forgotPassword,
   resetPassword,
-  adminLogin,
 };
