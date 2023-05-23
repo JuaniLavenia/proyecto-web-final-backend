@@ -47,7 +47,7 @@ const register = async (req, res) => {
 
     await user.save();
 
-    res.json({ register: true, user });
+    res.json({ register: true, userId: user.id });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -75,7 +75,7 @@ const forgotPassword = async (req, res) => {
       },
     });
 
-    const link = `http://localhost:5173/reset/${user.id}?token=${token}`;
+    const link = `https://rolling-detail-pf.vercel.app/reset/${user.id}?token=${token}`;
 
     let emailOptions = {
       from: "forgot.password@rollingdetailing.com",
