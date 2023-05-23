@@ -75,7 +75,7 @@ const forgotPassword = async (req, res) => {
 			},
 		});
 
-		const link = `http://localhost:5173/reset/${user.id}?token=${token}`;
+		const link = `https://rolling-detail-pf.vercel.app/${user.id}?token=${token}`;
 
 		let emailOptions = {
 			from: "forgot.password@rollingdetailing.com",
