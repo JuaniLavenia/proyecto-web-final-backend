@@ -127,7 +127,7 @@ const resetPassword = async (req, res) => {
     }
 
     res.json({
-      user,
+      userId: user.id,
       verified,
     });
   } catch (error) {
