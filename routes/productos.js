@@ -36,6 +36,7 @@ router.get("/productos", async (req, res) => {
 router.get("/productos/:id", async (req, res) => {
   try {
     const producto = await Producto.findById(req.params.id);
+    console.log(producto);
 
     res.json(producto);
   } catch (err) {
@@ -51,10 +52,10 @@ router.post("/productos", upload.single("image"), async (req, res) => {
       name: req.body.name,
       description: req.body.description,
       image: req.file.filename,
+      category: req.body.category,
       price: req.body.price,
       stock: req.body.stock,
       capacity: req.body.capacity,
-      category: req.body.category,
     });
 
     const result = await producto.save();
@@ -68,7 +69,7 @@ router.post("/productos", upload.single("image"), async (req, res) => {
 router.put("/productos/:id", upload.single("image"), async (req, res) => {
   try {
     const result = await Producto.findByIdAndUpdate(
-      req.params.id,
+      req.params.id, //aqui lo va a buscar
       {
         name: req.body.name,
         description: req.body.description,
@@ -106,7 +107,9 @@ router.get("/productos/search/:filter", async (req, res) => {
     if (!filter) {
       productos = await Producto.find();
     } else {
-      productos = await Producto.find({ name: { $regex: filter } });
+      productos = await Producto.find({
+        name: { $regex: filter, $options: "i" },
+      });
     }
 
     res.json(productos);
