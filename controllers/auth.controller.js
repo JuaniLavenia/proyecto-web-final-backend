@@ -101,7 +101,7 @@ const forgotPassword = async (req, res) => {
         return res.status(500).json({ err });
       }
       return res.json({
-        user,
+        userId: user.id,
         link,
       });
     });
