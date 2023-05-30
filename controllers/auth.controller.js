@@ -102,11 +102,10 @@ const forgotPassword = async (req, res) => {
       }
       return res.json({
         userId: user.id,
-        link,
+        send: true,
       });
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Server error" });
   }
 };

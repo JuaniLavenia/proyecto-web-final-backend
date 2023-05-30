@@ -18,12 +18,6 @@ const upload = multer({ storage: storage });
 
 router.get("/productos", async (req, res) => {
   try {
-    // const { authorization } = req.headers;
-    // const token = authorization.split(" ").pop();
-    // const payload = jwt.verify(token, process.env.JWT_SECRET);
-
-    // const { uid } = payload;
-    // const user = User.findById(uid);
     const productos = await Producto.find();
 
     res.json(productos);
@@ -69,7 +63,7 @@ router.post("/productos", upload.single("image"), async (req, res) => {
 router.put("/productos/:id", upload.single("image"), async (req, res) => {
   try {
     const result = await Producto.findByIdAndUpdate(
-      req.params.id, //aqui lo va a buscar
+      req.params.id,
       {
         name: req.body.name,
         description: req.body.description,
